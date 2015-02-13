@@ -21,7 +21,7 @@ def processIPTables (IPTables_input):
     if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
       print ("IPTables Chain header " + IPTables_input.split()[1] + " found! Beginning line-by-line processing...")
       if len(IPTables_input.splitlines()) > 2 :
-	print("Do stuff")
+	print("Do stuff!")
       else:
 	print("No IPTables Lines to process!")
 	return 0
