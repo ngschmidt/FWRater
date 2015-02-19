@@ -40,9 +40,9 @@ def processIPTables (IPTables_input):
                     else:
                         dstIP= ip_network(temp_var.split()[4])
                     if temp_var.split()[0] == "DROP":
-                        print("DROP statement " + srcIP + " " + dstIP + " score " + score(srcIP,dstIP,.00001))
+                        print("DROP statement " + srcIP.exploded + " " + dstIP.exploded + " score " + str(score(srcIP,dstIP,.00001)))
                     elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-                        print("PERMIT/LOG statement " + srcIP + " " + dstIP + " score " + score(srcIP,dstIP,1))
+                        print("PERMIT/LOG statement " + srcIP.exploded + " " + dstIP.exploded + " score " + str(score(srcIP,dstIP,1)))
             else:
                 print("No IPTables Lines to process!")
                 return 0
