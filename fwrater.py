@@ -16,53 +16,50 @@ from ipaddress import ip_network
 
 #Process IPTables Chain
 def processIPTables (IPTables_input):
-  if IPTables_input[0:5] == "Chain":
-    print ("IPTables Chain " + IPTables_input.split()[1] + " found with " + str(len(IPTables_input.splitlines())) + " lines!")
-    if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
-      print ("IPTables Chain header " + IPTables_input.split()[1] + " found! Beginning line-by-line processing...")
-      if len(IPTables_input.splitlines()) >= 3 :
-        for iter_loop in range(len(IPTables_input.splitlines())):
-          temp_var=IPTables_input.splitlines()[iter_loop]
-          if temp_var[0:5] == "Chain":
-            print("Found the chain again!")
-            continue
-          if temp_var[0:6] == "target":
-            print("Found the header again!")
-            continue
-          srcIP=""
-          dstIP=""
-          print(temp_var.split()[1])
-          print(temp_var.split()[5])
-          print(temp_var.split()[6])
-          if temp_var.split()[5] == "anywhere":
-            srcIP= ip_network("0.0.0.0/0")
-          else:
-            print(temp_var.split()[5])
+    if IPTables_input[0:5] == "Chain":
+        print ("IPTables Chain " + IPTables_input.split()[1] + " found with " + str(len(IPTables_input.splitlines())) + " lines!")
+        if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
+            print ("IPTables Chain header " + IPTables_input.split()[1] + " found! Beginning line-by-line processing...")
+            if len(IPTables_input.splitlines()) >= 3 :
+                for iter_loop in range(len(IPTables_input.splitlines())):
+                    temp_var=IPTables_input.splitlines()[iter_loop]
+                    if temp_var[0:5] == "Chain":
+                        print("Found the chain again!")
+                        continue
+                    if temp_var[0:6] == "target":
+                        print("Found the header again!")
+                        continue
+                    srcIP=""
+                    dstIP=""
+                    print(len(temp_var.split()))
+#          if temp_var.split()[5] == "anywhere":
+#            srcIP= ip_network("0.0.0.0/0")
+#          else:
+#            print(temp_var.split()[5])
 #            srcIP= ip_network(temp_var.split()[4])
-          if temp_var.split()[6] == "anywhere":
-            dstIP= ip_network("0.0.0.0/0")
-          else: 
-            print(temp_var.split()[6])
+#          if temp_var.split()[6] == "anywhere":
+#            dstIP= ip_network("0.0.0.0/0")
+#          else: 
+#            print(temp_var.split()[6])
 #            dstIP= ip_network(temp_var.split()[5])
-          if temp_var.split()[1] == "DROP":
-            print("DROP Statement Found. Score: " + score(srcIP,dstIP,.00001))
-          elif temp_var.split()[1] == "ACCEPT" or temp_var.split()[1] == "LOG":
-            print("Permit Statement Found. Score: " + score(srcIP,dstIP,1))
-        print("Do stuff!")
-      else:
-        print("No IPTables Lines to process!")
-        return 0
+#          if temp_var.split()[0] == "DROP":
+#            print("DROP Statement Found. Score: " + score(srcIP,dstIP,.00001))
+#          elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
+#            print("Permit Statement Found. Score: " + score(srcIP,dstIP,1))
+            else:
+                print("No IPTables Lines to process!")
+                return 0
+        else:
+            print("No IPTables Header found!")
+            return 0
     else:
-      print("No IPTables Header found!")
-      return 0
-  else:
-    print("No IPTables Chain found!")
-    return 0
-  return 1
+        print("No IPTables Chain found!")
+        return 0
+    return 1
 
 ##Score Function - To be improved
 def score (srcIP, destIP, scoreMOD):
-  return srcIP.num_addresses*destIP.num_addresses*scoreMOD
+    return srcIP.num_addresses*destIP.num_addresses*scoreMOD
 
 
 #Main goes here
