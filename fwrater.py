@@ -23,8 +23,11 @@ def processIPTables (IPTables_input):
         if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
             #after input verification for the chain and header is done, proceed to verify there are actual entries
             if len(IPTables_input.splitlines()) >= 3 :
+                return_list = []
+                return_list.append([IPTables_input.splitlines()[0].split()[1],"","","",""])
                 #iterate through the entries, skipping chain/header line, proceed to process entries.
                 #anywhere is assumed to be 0.0.0.0/0 as it's a keyword and that's what it means.
+                #insert header line to returned list
                 for iter_loop in range(len(IPTables_input.splitlines())):
                     temp_var=IPTables_input.splitlines()[iter_loop]
                     if temp_var[0:5] == "Chain":
@@ -43,14 +46,12 @@ def processIPTables (IPTables_input):
                     else:
                         dstIP= ip_network(temp_var.split()[4])
                     if temp_var.split()[0] == "DROP":
-                        print("DROP statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
-                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)))
+                        return_list.append(["DROP",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)])
                     elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-                        print("PERMIT/LOG statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
-                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
+                        return_list.append(["PERMIT",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],1)])
                     else:
-                        print("UNIDENTIFIED statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
-                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
+                        return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],1)])
+                return return_list
             else:
                 print("No IPTables Lines to process!")
                 return 0
@@ -62,8 +63,9 @@ def processIPTables (IPTables_input):
         return 0
     return 1
 
-##Score Function - To be improved
-def score (srcIP, destIP, proto, scoreMOD):
+#Score Function
+#Takes 2 ip networks, a protocol ID, protocol port (if applicable, if not 0) and a modifier (if applicable, if not 1)
+def score_entry (srcIP, destIP, proto, scoreMOD):
     return srcIP.num_addresses*destIP.num_addresses*scoreMOD
 
 
