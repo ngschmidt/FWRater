@@ -40,11 +40,14 @@ def processIPTables (IPTables_input):
                     else:
                         dstIP= ip_network(temp_var.split()[4])
                     if temp_var.split()[0] == "DROP":
-                        print("DROP statement " + srcIP.exploded + " " + dstIP.exploded + " score " + str(score(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)))
+                        print("DROP statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
+                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)))
                     elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-                        print("PERMIT/LOG statement " + srcIP.exploded + " " + dstIP.exploded + " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
+                        print("PERMIT/LOG statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
+                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
                     else:
-                        print("UNIDENTIFIED statement " + srcIP.exploded + " " + dstIP.exploded + " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
+                        print("UNIDENTIFIED statement " + temp_var.split()[1] + " " + srcIP.exploded + " " + dstIP.exploded + \
+                                " score " + str(score(srcIP,dstIP,temp_var.split()[1],1)))
             else:
                 print("No IPTables Lines to process!")
                 return 0
@@ -62,5 +65,4 @@ def score (srcIP, destIP, proto, scoreMOD):
 
 
 #Main goes here
-print(score(ip_network("192.168.1.1/32"),ip_network("192.168.1.2/31"),2.0))
 print(processIPTables("Chain input_ext (1 references)\ntarget     prot opt source               destination\nDROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\nACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"))
