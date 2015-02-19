@@ -18,19 +18,25 @@ from ipaddress import ip_network
 # takes a string, preferably multiline, but you want the entire chain.
 #Returns a list, including the action, protocol, src/dest, score
 def processIPTables (IPTables_input):
+    #if it's not a list, make it a list
+    if type(IPTables_input) is list:
+        IPTables_data= IPTables_input
+    else:
+        IPTables_data= IPTables_input.splitlines()
+    
     #find the iptables chain - input verification step 1
-    if IPTables_input[0:5] == "Chain":
+    if IPTables_data[0][0:5] == "Chain":
         #find the iptables header - input verification step 2
-        if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
+        if IPTables_data[1] == "target     prot opt source               destination":
             #after input verification for the chain and header is done, proceed to verify there are actual entries
-            if len(IPTables_input.splitlines()) >= 3 :
+            if len(IPTables_data) >= 3 :
                 return_list = []
-                return_list.append([IPTables_input.splitlines()[0].split()[1],"","","",""])
+                return_list.append([IPTables_data[0].split()[1],"","","",""])
                 #iterate through the entries, skipping chain/header line, proceed to process entries.
                 #anywhere is assumed to be 0.0.0.0/0 as it's a keyword and that's what it means.
                 #insert header line to returned list
-                for iter_loop in range(len(IPTables_input.splitlines())):
-                    temp_var=IPTables_input.splitlines()[iter_loop]
+                for iter_loop in range(len(IPTables_data)):
+                    temp_var=IPTables_data[iter_loop]
                     if temp_var[0:5] == "Chain":
                         continue
                     if temp_var[0:6] == "target":
@@ -99,9 +105,11 @@ def file_read (filename_to_read):
         print("File not found!")
 
 ###MAIN FUNCTIONALITY GOES HERE###
-file_read("a")
-file_read("fwrater.py")
-print_2d_list(processIPTables("Chain input_ext (1 references)\n" + \
+print("a")
+a= "Chain input_ext (1 references)\n" + \
         "target     prot opt source               destination\n" + \
         "DROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\n" + \
-        "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"))
+        "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"
+print(a)
+print_2d_list(processIPTables(a))
+print_2d_list(processIPTables(a.splitlines()))
