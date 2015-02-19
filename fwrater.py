@@ -63,10 +63,18 @@ def processIPTables (IPTables_input):
         return 0
     return 1
 
+
 #Score Function
 #Takes 2 ip networks, a protocol ID, protocol port (if applicable, if not 0) and a modifier (if applicable, if not 1)
 def score_entry (srcIP, destIP, proto, scoreMOD):
-    return srcIP.num_addresses*destIP.num_addresses*scoreMOD
+    known_protocols = { "udp" : 0.5,
+            "tcp" : 0.5,
+            "icmp" : 0.1}
+    addressCountMod = srcIP.num_addresses*destIP.num_addresses*scoreMOD
+    try:
+        return addressCountMod*known_protocols[proto]
+    except KeyError:
+        return addressCountMod*1
 
 
 #Main goes here
