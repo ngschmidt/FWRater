@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # Firewall Rater Tool (Prototype)
 # Nicholas Schmidt
@@ -77,8 +77,14 @@ def score_entry (srcIP, destIP, proto, scoreMOD):
         return addressCountMod*1
 
 
+#Print 2d array improvement
+def print_2d_list (list_2d):
+    for i in range(len(list_2d)):
+        print(list_2d[i])
+
+
 #Main goes here
-print(processIPTables("Chain input_ext (1 references)\n" + \
+print_2d_list(processIPTables("Chain input_ext (1 references)\n" + \
         "target     prot opt source               destination\n" + \
         "DROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\n" + \
         "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"))
