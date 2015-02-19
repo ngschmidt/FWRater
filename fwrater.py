@@ -3,7 +3,6 @@
 # Firewall Rater Tool (Prototype)
 # Nicholas Schmidt
 # 12 Feb 2015
-# Version 0.1: Initial File Creation
 
 #Includes go here
 import ipaddress
@@ -31,21 +30,19 @@ def processIPTables (IPTables_input):
                         continue
                     srcIP=""
                     dstIP=""
-                    print(len(temp_var.split()))
-#          if temp_var.split()[5] == "anywhere":
-#            srcIP= ip_network("0.0.0.0/0")
-#          else:
-#            print(temp_var.split()[5])
-#            srcIP= ip_network(temp_var.split()[4])
-#          if temp_var.split()[6] == "anywhere":
-#            dstIP= ip_network("0.0.0.0/0")
-#          else: 
-#            print(temp_var.split()[6])
-#            dstIP= ip_network(temp_var.split()[5])
-#          if temp_var.split()[0] == "DROP":
-#            print("DROP Statement Found. Score: " + score(srcIP,dstIP,.00001))
-#          elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-#            print("Permit Statement Found. Score: " + score(srcIP,dstIP,1))
+                    print(temp_var.split())
+                    if temp_var.split()[3] == "anywhere":
+                        srcIP= ip_network("0.0.0.0/0")
+                    else:
+                        srcIP= ip_network(temp_var.split[3])
+                    if temp_var.split()[4] == "anywhere":
+                        dstIP= ip_network("0.0.0.0/0")
+                    else:
+                        dstIP= ip_network(temp_var.split()[4])
+                    if temp_var.split()[0] == "DROP":
+                        print("DROP statement " + srcIP + " " + dstIP + " score " + score(srcIP,dstIP,.00001))
+                    elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
+                        print("PERMIT/LOG statement " + srcIP + " " + dstIP + " score " + score(srcIP,dstIP,1))
             else:
                 print("No IPTables Lines to process!")
                 return 0
