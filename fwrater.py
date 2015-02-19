@@ -14,19 +14,22 @@ from ipaddress import ip_network
 #Functions go here
 
 #Process IPTables Chain
+# takes a string, preferably multiline, but you want the entire chain.
+#Returns a list, including the action, protocol, src/dest, score
 def processIPTables (IPTables_input):
+    #find the iptables chain - input verification step 1
     if IPTables_input[0:5] == "Chain":
-        print ("IPTables Chain " + IPTables_input.split()[1] + " found with " + str(len(IPTables_input.splitlines())) + " lines!")
+        #find the iptables header - input verification step 2
         if IPTables_input.splitlines()[1] == "target     prot opt source               destination":
-            print ("IPTables Chain header " + IPTables_input.split()[1] + " found! Beginning line-by-line processing...")
+            #after input verification for the chain and header is done, proceed to verify there are actual entries
             if len(IPTables_input.splitlines()) >= 3 :
+                #iterate through the entries, skipping chain/header line, proceed to process entries.
+                #anywhere is assumed to be 0.0.0.0/0 as it's a keyword and that's what it means.
                 for iter_loop in range(len(IPTables_input.splitlines())):
                     temp_var=IPTables_input.splitlines()[iter_loop]
                     if temp_var[0:5] == "Chain":
-                        print("Found the chain again!")
                         continue
                     if temp_var[0:6] == "target":
-                        print("Found the header again!")
                         continue
                     srcIP=""
                     dstIP=""
@@ -65,4 +68,7 @@ def score (srcIP, destIP, proto, scoreMOD):
 
 
 #Main goes here
-print(processIPTables("Chain input_ext (1 references)\ntarget     prot opt source               destination\nDROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\nACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"))
+print(processIPTables("Chain input_ext (1 references)\n" + \
+        "target     prot opt source               destination\n" + \
+        "DROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\n" + \
+        "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"))
