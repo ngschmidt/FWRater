@@ -65,15 +65,16 @@ def processIPTablesChain (IPTables_input):
                         return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],1)])
                 return return_list
             else:
-                print("No IPTables Lines to process!")
+                #if no chain found, return 0
                 return 0
         else:
-            print("No IPTables Header found!")
-            return 0
+            #if no header found, return 1
+            return 1
     else:
-        print("No IPTables Chain found!")
+        #if no chain found, return 0
         return 0
-    return 1
+    #if no known errors occur, but no list found, return 2
+    return 2
 
 
 ##IPTables Read##
@@ -82,7 +83,6 @@ def readIPTablesOutput(iptables_data):
     temp_list = []
     temp_list = split_by_token(iptables_data,"Chain")
     for i in temp_list:
-        print(i)
         return_list.append(processIPTablesChain(i))
     return return_list
 
@@ -117,7 +117,6 @@ def print_2d_list (list_2d):
 def file_read (filename_to_read):
     try:
         file_return_io = open(filename_to_read,"r")
-        print(file_return_io)
         file_return_list = file_return_io.readlines()
         file_return_io.close()
         return file_return_list
