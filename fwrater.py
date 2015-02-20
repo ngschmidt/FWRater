@@ -107,6 +107,20 @@ def file_read (filename_to_read):
     except OSError:
         print("File not found!")
 
+#split list by token - used primarily for iptables -L sorting
+
+def split_by_token(list_to_split,list_token):
+    return_list = []
+    list_temp = []
+    for i in list_to_split:
+        if i.startswith(list_token) and list_temp:
+            return_list.append(list_temp[:])
+            list_temp = []
+        list_temp.append(i)
+    return_list.append(list_temp)
+    return return_list
+
+
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
@@ -116,3 +130,4 @@ a= "Chain input_ext (1 references)\n" + \
         "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"
 #print_2d_list(processIPTables(a))
 print_2d_list(processIPTables(a.splitlines()))
+print_2d_list(split_by_token(file_read("file-test"),"Chain"))
