@@ -31,9 +31,9 @@ def processIPTablesChain (IPTables_input):
         IPTables_data= IPTables_input.splitlines()
     
     #find the iptables chain - input verification step 1
-    if IPTables_data[0][0:5] == "Chain":
+    if IPTables_data[0].startswith("Chain"):
         #find the iptables header - input verification step 2
-        if IPTables_data[1] == "target     prot opt source               destination":
+        if IPTables_data[1].startswith("target"):
             #after input verification for the chain and header is done, proceed to verify there are actual entries
             if len(IPTables_data) >= 3 :
                 return_list = []
@@ -43,16 +43,18 @@ def processIPTablesChain (IPTables_input):
                 #insert header line to returned list
                 for iter_loop in range(len(IPTables_data)):
                     temp_var=IPTables_data[iter_loop]
-                    if temp_var[0:5] == "Chain":
+                    if temp_var.startswith("Chain"):
                         continue
-                    if temp_var[0:6] == "target":
+                    if temp_var.startswith("target"):
+                        continue
+                    if len(temp_var.split()) < 5:
                         continue
                     srcIP=""
                     dstIP=""
                     if temp_var.split()[3] == "anywhere":
                         srcIP= ip_network("0.0.0.0/0")
                     else:
-                        srcIP= ip_network(temp_var.split[3])
+                        srcIP= ip_network(temp_var.split()[3])
                     if temp_var.split()[4] == "anywhere":
                         dstIP= ip_network("0.0.0.0/0")
                     else:
@@ -109,6 +111,14 @@ def print_2d_list (list_2d):
         print(list_2d[i])
 
 
+#Print 3d array improvement
+
+def print_3d_list (list_3d):
+    for i in range(len(list_3d)):
+        if type(list_3d[i]) is list:
+            print_2d_list(list_3d[i])
+
+
 ###IO GOES HERE###
 
 
@@ -140,4 +150,4 @@ def split_by_token(list_to_split,list_token):
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
-print_2d_list(readIPTablesOutput(file_read("file-test")))
+print_3d_list(readIPTablesOutput(file_read("file-test")))
