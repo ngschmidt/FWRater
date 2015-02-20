@@ -31,50 +31,45 @@ def processIPTablesChain (IPTables_input):
         IPTables_data= IPTables_input.splitlines()
     
     #find the iptables chain - input verification step 1
-    if IPTables_data[0].startswith("Chain"):
-        #find the iptables header - input verification step 2
-        if IPTables_data[1].startswith("target"):
-            #after input verification for the chain and header is done, proceed to verify there are actual entries
-            if len(IPTables_data) >= 3 :
-                return_list = []
-                return_list.append([IPTables_data[0].split()[1],"","","",""])
-                #iterate through the entries, skipping chain/header line, proceed to process entries.
-                #anywhere is assumed to be 0.0.0.0/0 as it's a keyword and that's what it means.
-                #insert header line to returned list
-                for iter_loop in range(len(IPTables_data)):
-                    temp_var=IPTables_data[iter_loop]
-                    if temp_var.startswith("Chain"):
-                        continue
-                    if temp_var.startswith("target"):
-                        continue
-                    if len(temp_var.split()) < 5:
-                        continue
-                    srcIP=""
-                    dstIP=""
-                    if temp_var.split()[3] == "anywhere":
-                        srcIP= ip_network("0.0.0.0/0")
-                    else:
-                        srcIP= ip_network(temp_var.split()[3])
-                    if temp_var.split()[4] == "anywhere":
-                        dstIP= ip_network("0.0.0.0/0")
-                    else:
-                        dstIP= ip_network(temp_var.split()[4])
-                    if temp_var.split()[0] == "DROP":
-                        return_list.append(["DROP",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)])
-                    elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-                        return_list.append(["PERMIT",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
-                    else:
-                        return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
-                return return_list
-            else:
-                #if no chain found, return 0
-                return 0
-        else:
-            #if no header found, return 1
-            return 1
-    else:
-        #if no chain found, return 0
+    if not IPTables_data[0].startswith("Chain"):
         return 0
+
+    #find the iptables header - input verification step 2
+    if not IPTables_data[1].startswith("target"):
+        return 1
+
+        #after input verification for the chain and header is done, proceed to verify there are actual entries
+    if len(IPTables_data) >= 3 :
+        return_list = []
+        return_list.append([IPTables_data[0].split()[1],"","","",""])
+        #iterate through the entries, skipping chain/header line, proceed to process entries.
+        #anywhere is assumed to be 0.0.0.0/0 as it's a keyword and that's what it means.
+        #insert header line to returned list
+        for iter_loop in range(len(IPTables_data)):
+            temp_var=IPTables_data[iter_loop]
+            if temp_var.startswith("Chain"):
+                continue
+            if temp_var.startswith("target"):
+                continue
+            if len(temp_var.split()) < 5:
+                continue
+            srcIP=""
+            dstIP=""
+            if temp_var.split()[3] == "anywhere":
+                srcIP= ip_network("0.0.0.0/0")
+            else:
+                srcIP= ip_network(temp_var.split()[3])
+            if temp_var.split()[4] == "anywhere":
+                dstIP= ip_network("0.0.0.0/0")
+            else:
+                dstIP= ip_network(temp_var.split()[4])
+            if temp_var.split()[0] == "DROP":
+                return_list.append(["DROP",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)])
+            elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
+                return_list.append(["PERMIT",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
+            else:
+                return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
+        return return_list
     #if no known errors occur, but no list found, return 2
     return 2
 
