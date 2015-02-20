@@ -17,6 +17,7 @@ from ipaddress import ip_network
 #Process IPTables Chain
 # takes a string, preferably multiline, but you want the entire chain.
 #Returns a list, including the action, protocol, src/dest, score
+
 def processIPTables (IPTables_input):
     #if it's not a list, make it a list
     if type(IPTables_input) is list:
@@ -43,7 +44,6 @@ def processIPTables (IPTables_input):
                         continue
                     srcIP=""
                     dstIP=""
-                    print(temp_var.split())
                     if temp_var.split()[3] == "anywhere":
                         srcIP= ip_network("0.0.0.0/0")
                     else:
@@ -73,6 +73,7 @@ def processIPTables (IPTables_input):
 ###UTILITY FUNCTIONS GO HERE###
 #Score Function
 #Takes 2 ip networks, a protocol ID, protocol port (if applicable, if not 0) and a modifier (if applicable, if not 1)
+
 def score_entry (srcIP, destIP, proto, scoreMOD):
     known_protocols = { "udp" : 0.5,
             "tcp" : 0.5,
@@ -85,6 +86,7 @@ def score_entry (srcIP, destIP, proto, scoreMOD):
 
 
 #Print 2d array improvement
+
 def print_2d_list (list_2d):
     for i in range(len(list_2d)):
         print(list_2d[i])
@@ -94,6 +96,7 @@ def print_2d_list (list_2d):
 
 
 #Open a file <file_name> if it exists. Return file as a string
+
 def file_read (filename_to_read):
     try:
         file_return_io = open(filename_to_read,"r")
@@ -105,11 +108,11 @@ def file_read (filename_to_read):
         print("File not found!")
 
 ###MAIN FUNCTIONALITY GOES HERE###
-print("a")
+
+
 a= "Chain input_ext (1 references)\n" + \
         "target     prot opt source               destination\n" + \
         "DROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\n" + \
         "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"
-print(a)
-print_2d_list(processIPTables(a))
+#print_2d_list(processIPTables(a))
 print_2d_list(processIPTables(a.splitlines()))
