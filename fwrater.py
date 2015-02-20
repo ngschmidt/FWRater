@@ -14,11 +14,16 @@ from ipaddress import ip_network
 #Functions go here
 
 ###LIST INTERPRETERS GO HERE###
+
+
+##IPTABLES HERE##
+
+
 #Process IPTables Chain
 # takes a string, preferably multiline, but you want the entire chain.
 #Returns a list, including the action, protocol, src/dest, score
 
-def processIPTables (IPTables_input):
+def processIPTablesChain (IPTables_input):
     #if it's not a list, make it a list
     if type(IPTables_input) is list:
         IPTables_data= IPTables_input
@@ -69,6 +74,18 @@ def processIPTables (IPTables_input):
         print("No IPTables Chain found!")
         return 0
     return 1
+
+
+##IPTables Read##
+def readIPTablesOutput(iptables_data):
+    return_list = []
+    temp_list = []
+    temp_list = split_by_token(iptables_data,"Chain")
+    for i in temp_list:
+        print(i)
+        return_list.append(processIPTablesChain(i))
+    return return_list
+
 
 ###UTILITY FUNCTIONS GO HERE###
 #Score Function
@@ -124,10 +141,4 @@ def split_by_token(list_to_split,list_token):
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
-a= "Chain input_ext (1 references)\n" + \
-        "target     prot opt source               destination\n" + \
-        "DROP       all  --  anywhere             anywhere             PKTTYPE = broadcast\n" + \
-        "ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain"
-#print_2d_list(processIPTables(a))
-print_2d_list(processIPTables(a.splitlines()))
-print_2d_list(split_by_token(file_read("file-test"),"Chain"))
+print_2d_list(readIPTablesOutput(file_read("file-test")))
