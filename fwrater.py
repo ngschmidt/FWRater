@@ -107,13 +107,37 @@ def print2DList (list_2d):
 
 
 #Print 3d array improvement
-
 def print3DList (list_3d):
     for i in range(len(list_3d)):
         if type(list_3d[i]) is list:
             print2DList(list_3d[i])
 
 
+#print ACL function - takes the standard 5-wide list output
+def printACL (list_acl):
+    for i in list_acl:
+        if type(i) is not list:
+            continue
+        if len(i) is not 5:
+            continue
+        if i[0] is "PERMIT":
+            print("Rule PERMIT type " + i[1] + " with SRC " + str(i[2]) + \
+                    " and DEST " + str(i[3]) + "received a score of " + str(i[4]))
+        elif i[0] is "DENY":
+            print("Rule DENY type " + i[1] + " with SRC " + str(i[2]) + \
+                    " and DEST " + str(i[3]) + "received a score of " + str(i[4]))
+        elif i[0] is "UNK":
+            print("Rule UNK type " + i[1] + " with SRC " + str(i[2]) + \
+                    " and DEST " + str(i[3]) + "received a score of " + str(i[4]))
+        else:
+            print("ACL NAME: " + i[0] + " Entries")
+
+
+#print ACLs function - handle all of the ACLs!!
+def printACLs (list_acls):
+    for i in list_acls:
+        if type(i) is list:
+            printACL(i)
 ###IO GOES HERE###
 
 
@@ -145,4 +169,4 @@ def splitByToken(list_to_split,list_token):
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
-print3DList(readIPTablesOutput(fileRead("file-test")))
+printACLs(readIPTablesOutput(fileRead("file-test")))
