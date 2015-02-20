@@ -60,11 +60,11 @@ def processIPTablesChain (IPTables_input):
                     else:
                         dstIP= ip_network(temp_var.split()[4])
                     if temp_var.split()[0] == "DROP":
-                        return_list.append(["DROP",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)])
+                        return_list.append(["DROP",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],.00000000000000000001)])
                     elif temp_var.split()[0] == "ACCEPT" or temp_var.split()[0] == "LOG":
-                        return_list.append(["PERMIT",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],1)])
+                        return_list.append(["PERMIT",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
                     else:
-                        return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,score_entry(srcIP,dstIP,temp_var.split()[1],1)])
+                        return_list.append(["UNK",temp_var.split()[1],srcIP,dstIP,scoreEntry(srcIP,dstIP,temp_var.split()[1],1)])
                 return return_list
             else:
                 #if no chain found, return 0
@@ -83,7 +83,7 @@ def processIPTablesChain (IPTables_input):
 def readIPTablesOutput(iptables_data):
     return_list = []
     temp_list = []
-    temp_list = split_by_token(iptables_data,"Chain")
+    temp_list = splitByToken(iptables_data,"Chain")
     for i in temp_list:
         return_list.append(processIPTablesChain(i))
     return return_list
@@ -93,7 +93,7 @@ def readIPTablesOutput(iptables_data):
 #Score Function
 #Takes 2 ip networks, a protocol ID, protocol port (if applicable, if not 0) and a modifier (if applicable, if not 1)
 
-def score_entry (srcIP, destIP, proto, scoreMOD):
+def scoreEntry (srcIP, destIP, proto, scoreMOD):
     known_protocols = { "udp" : 0.5,
             "tcp" : 0.5,
             "icmp" : 0.1}
@@ -106,17 +106,17 @@ def score_entry (srcIP, destIP, proto, scoreMOD):
 
 #Print 2d array improvement
 
-def print_2d_list (list_2d):
+def print2DList (list_2d):
     for i in range(len(list_2d)):
         print(list_2d[i])
 
 
 #Print 3d array improvement
 
-def print_3d_list (list_3d):
+def print3DList (list_3d):
     for i in range(len(list_3d)):
         if type(list_3d[i]) is list:
-            print_2d_list(list_3d[i])
+            print2DList(list_3d[i])
 
 
 ###IO GOES HERE###
@@ -124,7 +124,7 @@ def print_3d_list (list_3d):
 
 #Open a file <file_name> if it exists. Return file as a string
 
-def file_read (filename_to_read):
+def fileRead (filename_to_read):
     try:
         file_return_io = open(filename_to_read,"r")
         file_return_list = file_return_io.readlines()
@@ -135,7 +135,7 @@ def file_read (filename_to_read):
 
 #split list by token - used primarily for iptables -L sorting
 
-def split_by_token(list_to_split,list_token):
+def splitByToken(list_to_split,list_token):
     return_list = []
     list_temp = []
     for i in list_to_split:
@@ -150,4 +150,4 @@ def split_by_token(list_to_split,list_token):
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
-print_3d_list(readIPTablesOutput(file_read("file-test")))
+print3DList(readIPTablesOutput(fileRead("file-test")))
