@@ -6,10 +6,13 @@
 
 #Includes go here
 import ipaddress
+import sys
 
 #Imports go here
 from ipaddress import ip_address
 from ipaddress import ip_network
+from sys import argv
+
 
 #Functions go here
 
@@ -150,10 +153,26 @@ def fileRead (filename_to_read):
         file_return_io.close()
         return file_return_list
     except OSError:
-        print("File not found!")
+        return 0
+
+
+#read file from argv
+def readFileFromArgv():
+    if len(sys.argv) is 2:
+        return_file_list = fileRead(argv[1])
+    else:
+        print("Please pass the sript a file to analyze.")
+        print("Example: fwrater <file name>")
+        return 0
+    if type(return_file_list) is list:
+        return fileRead(argv[1])
+    else:
+        print("Invalid file found! Please pass the script a valid filename.")
+        print("Example: fwrater <file name>")
+        return 1
+
 
 #split list by token - used primarily for iptables -L sorting
-
 def splitByToken(list_to_split,list_token):
     return_list = []
     list_temp = []
@@ -169,4 +188,4 @@ def splitByToken(list_to_split,list_token):
 ###MAIN FUNCTIONALITY GOES HERE###
 
 
-printACLs(readIPTablesOutput(fileRead("file-test")))
+printACLs(readIPTablesOutput(readFileFromArgv()))
