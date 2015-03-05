@@ -157,6 +157,7 @@ def fileRead (filename_to_read):
         file_return_io.close()
         return file_return_list
     except OSError:
+        print("Invalid filename: " + filename_to_read)
         return 0
 
 
@@ -184,18 +185,19 @@ def processScriptArgs():
     input_file=''
     #get options from argv
     try:
-        options_from_argv, args = getopt.getopt(sys.argv[1:],"i:t:")
+        options_from_argv, args_unused = getopt.getopt(sys.argv[1:],"i:t:")
     except getopt.GetoptError as error_code:
         print(str(error_code))
         print("Invalid command!")
         print("Usage example: fwrater -i <input file> -t <ACL Type>")
     #handle options parsed by getopt
     for switch_to_parse, arg_to_switch in options_from_argv:
-        if switch_to_parse is "-i":
-            print("Filename " + arg_to_switch)
+        if switch_to_parse == "-i":
             input_file=fileRead(arg_to_switch)
-        elif switch_to_parse is "-t":
+        elif switch_to_parse == "-t":
             type_of_ACL=arg_to_switch
+        else:
+            print("Could not identify switch " + switch_to_parse)
     #now, to do something with the variables gathered.
     if input_file is not "" and input_file is not 0:
         if type_of_ACL is "IPTables":
@@ -204,9 +206,6 @@ def processScriptArgs():
             print("Invalid ACL Type detected!")
             print("Types supported:")
             print("IPTables")
-            print("\"" + input_file + "\"")
-    else:
-        print("File not found! File given: " + input_file)
 
 
 #split list by token - used primarily for iptables -L sorting
