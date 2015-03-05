@@ -109,6 +109,7 @@ def print2DList (list_2d):
 
 
 #Print 3d array improvement
+
 def print3DList (list_3d):
     for i in range(len(list_3d)):
         if type(list_3d[i]) is list:
@@ -116,6 +117,7 @@ def print3DList (list_3d):
 
 
 #print ACL function - takes the standard 5-wide list output
+
 def printACL (list_acl):
     for i in list_acl:
         if type(i) is not list:
@@ -136,10 +138,13 @@ def printACL (list_acl):
 
 
 #print ACLs function - handle all of the ACLs!!
+
 def printACLs (list_acls):
     for i in list_acls:
         if type(i) is list:
             printACL(i)
+
+
 ###IO GOES HERE###
 
 
@@ -156,6 +161,7 @@ def fileRead (filename_to_read):
 
 
 #read file from argv
+
 def readFileFromArgv():
     if len(sys.argv) is 2:
         return_file_list = fileRead(argv[1])
@@ -172,6 +178,7 @@ def readFileFromArgv():
 
 
 #process script arguments
+
 def processScriptArgs():
     type_of_ACL=''
     input_file=''
@@ -185,13 +192,21 @@ def processScriptArgs():
     #handle options parsed by getopt
     for switch_to_parse, arg_to_switch in myopts:
         if switch_to_parse is "-i":
-            input_file=arg_to_switch
+            input_file=fileRead(arg_to_switch)
         elif switch_to_parse is "-t":
             type_of_ACL=arg_to_switch
-
+    #now, to do something with the variables gathered.
+    if input_file is not 0:
+        if type_of_ACL is "IPTables":
+            printACLs(readIPTablesList(input_file))
+        else:
+            print("Invalid ACL Type detected!")
+            print("Types supported:")
+            print("IPTables")
 
 
 #split list by token - used primarily for iptables -L sorting
+
 def splitByToken(list_to_split,list_token):
     return_list = []
     list_temp = []
@@ -206,5 +221,5 @@ def splitByToken(list_to_split,list_token):
 
 ###MAIN FUNCTIONALITY GOES HERE###
 
-
-printACLs(readIPTablesOutput(readFileFromArgv()))
+processScriptArgs()
+#printACLs(readIPTablesOutput(readFileFromArgv()))
