@@ -190,19 +190,23 @@ def processScriptArgs():
         print("Invalid command!")
         print("Usage example: fwrater -i <input file> -t <ACL Type>")
     #handle options parsed by getopt
-    for switch_to_parse, arg_to_switch in myopts:
+    for switch_to_parse, arg_to_switch in options_from_argv:
         if switch_to_parse is "-i":
+            print("Filename " + arg_to_switch)
             input_file=fileRead(arg_to_switch)
         elif switch_to_parse is "-t":
             type_of_ACL=arg_to_switch
     #now, to do something with the variables gathered.
-    if input_file is not 0:
+    if input_file is not "" and input_file is not 0:
         if type_of_ACL is "IPTables":
             printACLs(readIPTablesList(input_file))
         else:
             print("Invalid ACL Type detected!")
             print("Types supported:")
             print("IPTables")
+            print("\"" + input_file + "\"")
+    else:
+        print("File not found! File given: " + input_file)
 
 
 #split list by token - used primarily for iptables -L sorting
