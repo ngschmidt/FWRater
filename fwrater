@@ -161,23 +161,6 @@ def fileRead (filename_to_read):
         return 0
 
 
-#read file from argv
-
-def readFileFromArgv():
-    if len(sys.argv) is 2:
-        return_file_list = fileRead(argv[1])
-    else:
-        print("Please pass the sript a file to analyze.")
-        print("Example: fwrater <file name>")
-        return 0
-    if type(return_file_list) is list:
-        return fileRead(argv[1])
-    else:
-        print("Invalid file found! Please pass the script a valid filename.")
-        print("Example: fwrater <file name>")
-        return 1
-
-
 #process script arguments
 
 def processScriptArgs():
@@ -200,10 +183,10 @@ def processScriptArgs():
             print("Could not identify switch " + switch_to_parse)
     #now, to do something with the variables gathered.
     if input_file is not "" and input_file is not 0:
-        if type_of_ACL is "IPTables":
-            printACLs(readIPTablesList(input_file))
+        if type_of_ACL == "IPTables":
+            printACLs(readIPTablesOutput(input_file))
         else:
-            print("Invalid ACL Type detected!")
+            print("Invalid ACL Type detected! Type passed by command: " + type_of_ACL)
             print("Types supported:")
             print("IPTables")
 
