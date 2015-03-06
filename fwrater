@@ -77,6 +77,7 @@ def processIPTablesChain (IPTables_input):
 
 
 ##IPTables Read##
+
 def readIPTablesOutput(iptables_data):
     return_list = []
     temp_list = []
@@ -116,6 +117,12 @@ def print3DList (list_3d):
             print2DList(list_3d[i])
 
 
+# print the first member of a list
+
+def printListMembersHeader (list_input):
+    if type(list_input) is list:
+        print(list_input[i][0])
+
 #print ACL function - takes the standard 5-wide list output
 
 def printACL (list_acl):
@@ -145,6 +152,13 @@ def printACLs (list_acls):
             printACL(i)
 
 
+#helpful print ACLs function - let the user pick what ACL!
+
+def printHelpfulACLs (list_acls):
+    if type(list_acls) is list:
+        printListMembersHeader(list_acls)
+
+
 ###IO GOES HERE###
 
 
@@ -166,25 +180,31 @@ def fileRead (filename_to_read):
 def processScriptArgs():
     type_of_ACL=''
     input_file=''
+    is_helpful=''
     #get options from argv
     try:
-        options_from_argv, args_unused = getopt.getopt(sys.argv[1:],"i:t:")
+        options_from_argv, args_unused = getopt.gnu_getopt(sys.argv[1:],"i:t:p")
     except getopt.GetoptError as error_code:
         print(str(error_code))
         print("Invalid command!")
-        print("Usage example: fwrater -i <input file> -t <ACL Type>")
+        print("Usage example: fwrater -i <input file> -t <ACL Type> <-p>")
     #handle options parsed by getopt
     for switch_to_parse, arg_to_switch in options_from_argv:
         if switch_to_parse == "-i":
             input_file=fileRead(arg_to_switch)
         elif switch_to_parse == "-t":
             type_of_ACL=arg_to_switch
+        elif switch_to_parse == "-p":
+            is_helpful="true"
         else:
             print("Could not identify switch " + switch_to_parse)
     #now, to do something with the variables gathered.
     if input_file is not "" and input_file is not 0:
         if type_of_ACL == "IPTables":
-            printACLs(readIPTablesOutput(input_file))
+            if is_helpful != "true":
+                printACLs(readIPTablesOutput(input_file))
+            else:
+                printHelpfulACLs(readIPTablesOutput(input_file))
         else:
             print("Invalid ACL Type detected! Type passed by command: " + type_of_ACL)
             print("Types supported:")
