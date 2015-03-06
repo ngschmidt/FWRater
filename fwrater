@@ -120,8 +120,12 @@ def print3DList (list_3d):
 # print the first member of a list
 
 def printListMembersHeader (list_input):
+    viable_options = []
     if type(list_input) is list:
-        print(list_input[i][0])
+        for i in list_input:
+            if type(i) is list:
+                viable_options.append(i[0][0])
+    print(viable_options)
 
 #print ACL function - takes the standard 5-wide list output
 
