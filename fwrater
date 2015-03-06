@@ -131,7 +131,7 @@ def printListMembersHeader (list_input):
     choice = input("Choose an ACL:  ")
     if choice in viable_options:
         print("Print specific ACL: " + choice)
-        print(getACLWithHeader(list_input, choice))
+        printACL(getACLWithHeader(list_input, choice))
 
 #print ACL function - takes the standard 5-wide list output
 
@@ -160,7 +160,6 @@ def printACLs (list_acls):
     for i in list_acls:
         if type(i) is list:
             printACL(i)
-
 
 
 #helpful print ACLs function - let the user pick what ACL!
