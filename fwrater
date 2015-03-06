@@ -126,6 +126,11 @@ def printListMembersHeader (list_input):
             if type(i) is list:
                 viable_options.append(i[0][0])
     print(viable_options)
+    print("ACLs Found:")
+    print(" ".join(viable_options))
+    choice = input("Choose an ACL:  ")
+    if choice in viable_options:
+        print("Print specific ACL: " + choice)
 
 #print ACL function - takes the standard 5-wide list output
 
